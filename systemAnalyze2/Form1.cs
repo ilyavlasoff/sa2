@@ -35,45 +35,58 @@ namespace systemAnalyze2
         private void okButton_Click(object sender, EventArgs e)
         {
             List<List<int>> inputValues = new List<List<int>>();
-            //for(int i=0; i!= count; ++i)
-            //{
-            //    DataGridViewRow curRow = relationsMatrixView.Rows[i];
-            //    List<int> curList = new List<int>();
-            //    for(int j=0; j!= count; ++j)
-            //    {
-            //        int val = 0;
-            //        if (!Int32.TryParse(curRow.Cells[j].Value.ToString(), out val))
-            //        {
-            //            MessageBox.Show("неверные значения");
-            //            return;
-            //        }
-            //        if (val == 1)
-            //            curList.Add(j);
-            //    }
-            //    inputValues.Add(curList);
-            //}
-            inputValues.Add(new List<int> { 1, 6 });
-            inputValues.Add(new List<int> { 2, 3 });
-            inputValues.Add(new List<int> { });
-            inputValues.Add(new List<int> { });
-            inputValues.Add(new List<int> { 3 });
-            inputValues.Add(new List<int> { 2, 3 });
-            inputValues.Add(new List<int> { 1 });
-            inputValues.Add(new List<int> { 5, 6 });
-            inputValues.Add(new List<int> { 1 });
-            inputValues.Add(new List<int> { 4,6,7,8 });
+            for (int i = 0; i != count; ++i)
+            {
+                DataGridViewRow curRow = relationsMatrixView.Rows[i];
+                List<int> curList = new List<int>();
+                for (int j = 0; j != count; ++j)
+                {
+                    int val = 0;
+                    if (!Int32.TryParse(curRow.Cells[j].Value.ToString(), out val))
+                    {
+                        MessageBox.Show("неверные значения");
+                        return;
+                    }
+                    if (val == 1)
+                        curList.Add(j);
+                }
+                inputValues.Add(curList);
+            }
+            //inputValues.Add(new List<int> { 1, 6 });
+            //inputValues.Add(new List<int> { 2, 3 });
+            //inputValues.Add(new List<int> { });
+            //inputValues.Add(new List<int> { });
+            //inputValues.Add(new List<int> { 3 });
+            //inputValues.Add(new List<int> { 2, 3 });
+            //inputValues.Add(new List<int> { 1 });
+            //inputValues.Add(new List<int> { 5, 6 });
+            //inputValues.Add(new List<int> { 1 });
+            //inputValues.Add(new List<int> { 4,6,7,8 });
             oper = new GraphOperator(count, inputValues);
             oper.createLevels();
             int value = int.Parse(levelUpDown.Value.ToString());
             levelList.Text = showLevelsForVal(value);
-            levelUpDown.Maximum = oper.levelsCount;
+            levelUpDown.Maximum = oper.levelsCount - 1;
             allLevelCount.Text = oper.levelsCount.ToString();
             showRenamedMatrix();
         }
 
         private void showRenamedMatrix()
         {
-            
+            List<List<int>> refreshedMatrix = oper.createRenumberedGraphList();
+            relationsMatrixView.Rows.Clear();
+            foreach(List<int> l in refreshedMatrix)
+            {
+                DataGridViewRow dgvr = new DataGridViewRow();
+                for(int i=0; i!= count; ++i)
+                {
+                    DataGridViewTextBoxCell cell = new DataGridViewTextBoxCell();
+                    if (l.Contains(i)) cell.Value = "1";
+                    else cell.Value = "0";
+                    dgvr.Cells.Add(cell);
+                }
+                relationsMatrixView.Rows.Add(dgvr);
+            }
         }
 
         private void levelUpDown_ValueChanged(object sender, EventArgs e)

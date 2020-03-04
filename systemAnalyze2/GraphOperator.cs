@@ -35,6 +35,41 @@ namespace systemAnalyze2
             return incList;
         }
 
+        public Dictionary<int, int> reNumberNode()
+        {
+            Dictionary<int, int> renumberRule = new Dictionary<int, int>();
+            List<int> oldNums = levels.Keys.ToList();
+            for(int i=0; i!= oldNums.Count; ++i)
+            {
+                renumberRule.Add(oldNums[i], i);
+            }
+            return renumberRule;
+        }
+
+        public List<List<int>> createRenumberedGraphList()
+        {
+            Dictionary<int, int> rule = reNumberNode();
+            Dictionary<int, List<int>> subList = new Dictionary<int, List<int>>();
+            List<List<int>> renewedList = new List<List<int>>(count);
+            for(int i=0; i!=count; ++i)
+            {
+                List<int> row = matrix[i];
+                for (int j=0; j!= row.Count; ++j)
+                {
+                    int a = row[j];
+                    int b = rule[row[j]];
+                    row[j] = rule[row[j]];
+                }
+                int x = rule[i];
+                subList.Add(rule[i], row);
+            }
+            for (int i =0; i!= count; ++i)
+            {
+                renewedList.Add(subList[i]);
+            }
+            return renewedList;
+        }
+
         public void createLevels()
         {
             for(int i=0; i!= count; ++i)

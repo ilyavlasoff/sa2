@@ -7,3 +7,12 @@ C:\Users\iljav\source\repos\systemAnalyze2\systemAnalyze2\obj\Debug\systemAnalyz
 C:\Users\iljav\source\repos\systemAnalyze2\systemAnalyze2\obj\Debug\systemAnalyze2.csproj.GenerateResource.cache
 C:\Users\iljav\source\repos\systemAnalyze2\systemAnalyze2\obj\Debug\systemAnalyze2.exe
 C:\Users\iljav\source\repos\systemAnalyze2\systemAnalyze2\obj\Debug\systemAnalyze2.pdb
+C:\Study\sa\sa2\systemAnalyze2\bin\Debug\systemAnalyze2.exe.config
+C:\Study\sa\sa2\systemAnalyze2\bin\Debug\systemAnalyze2.exe
+C:\Study\sa\sa2\systemAnalyze2\bin\Debug\systemAnalyze2.pdb
+C:\Study\sa\sa2\systemAnalyze2\obj\Debug\systemAnalyze2.csprojAssemblyReference.cache
+C:\Study\sa\sa2\systemAnalyze2\obj\Debug\systemAnalyze2.Form1.resources
+C:\Study\sa\sa2\systemAnalyze2\obj\Debug\systemAnalyze2.Properties.Resources.resources
+C:\Study\sa\sa2\systemAnalyze2\obj\Debug\systemAnalyze2.csproj.GenerateResource.cache
+C:\Study\sa\sa2\systemAnalyze2\obj\Debug\systemAnalyze2.exe
+C:\Study\sa\sa2\systemAnalyze2\obj\Debug\systemAnalyze2.pdb
