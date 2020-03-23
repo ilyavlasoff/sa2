@@ -33,7 +33,7 @@ namespace systemAnalyze2
                     incList.Add(i);
             }
             return incList;
-        }
+        } 
 
         public Dictionary<int, int> reNumberNode()
         {
@@ -46,26 +46,22 @@ namespace systemAnalyze2
             return renumberRule;
         }
 
+        public Dictionary<int, int> rule = null;
         public List<List<int>> createRenumberedGraphList()
         {
-            Dictionary<int, int> rule = reNumberNode();
-            Dictionary<int, List<int>> subList = new Dictionary<int, List<int>>();
+            rule = reNumberNode();
             List<List<int>> renewedList = new List<List<int>>(count);
             for(int i=0; i!=count; ++i)
             {
-                List<int> row = matrix[i];
-                for (int j=0; j!= row.Count; ++j)
-                {
-                    int a = row[j];
-                    int b = rule[row[j]];
-                    row[j] = rule[row[j]];
-                }
-                int x = rule[i];
-                subList.Add(rule[i], row);
+                renewedList.Add(new List<int>());
             }
-            for (int i =0; i!= count; ++i)
+            for(int i=0; i!=count; ++i)
             {
-                renewedList.Add(subList[i]);
+                for (int j=0; j!= matrix[i].Count; ++j)
+                {
+                    renewedList[rule[i]].Add(rule[matrix[i][j]]);
+                }
+                renewedList[rule[i]].Sort();
             }
             return renewedList;
         }
@@ -94,7 +90,7 @@ namespace systemAnalyze2
                     List<int> incomNodes = getIncomingNodes(currLevel[i]);
                     if (levels.Keys.ToList().Intersect(incomNodes).Count() == incomNodes.Count)
                         validLevel.Add(currLevel[i]);
-                }
+                } 
                 foreach (int v in validLevel)
                     levels.Add(v, levelsCount);
                 prevLevel = new List<int>(validLevel);
@@ -104,6 +100,26 @@ namespace systemAnalyze2
             while (currLevel.Count != 0);
         }
 
-
+        public int bounds = 0;
+        public List<List<KeyValuePair<int, int>>> AtoBMatrix(List<List<int>> Amatrix)
+        {
+            List<List<KeyValuePair<int, int>>> Bmatrix = new List<List<KeyValuePair<int, int>>>();
+            for (int i = 0; i != Amatrix.Count; ++i)
+            {
+                Bmatrix.Add(new List<KeyValuePair<int, int>>());
+            }
+            int num = 0;
+            for (int i = 0; i != Amatrix.Count; ++i)
+            {
+                for (int j = 0; j != Amatrix[i].Count; ++j)
+                {
+                    Bmatrix[i].Add(new KeyValuePair<int, int>(num, 1));
+                    Bmatrix[Amatrix[i][j]].Add(new KeyValuePair<int, int>(num, -1));
+                    ++num;
+                }
+            }
+            bounds = num;
+            return Bmatrix;
+        }
     }
 }

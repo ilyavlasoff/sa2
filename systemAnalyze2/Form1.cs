@@ -23,6 +23,11 @@ namespace systemAnalyze2
         private void topsCount_ValueChanged(object sender, EventArgs e)
         {
             count = Int32.Parse(topsCount.Value.ToString());
+            if (count < 1)
+            {
+                MessageBox.Show("Значение должно быть больше 0");
+                return;
+            }
             relationsMatrixView.RowCount = count;
             relationsMatrixView.ColumnCount = count;
             for (int i=0; i!= count; i++)
@@ -41,51 +46,76 @@ namespace systemAnalyze2
                 List<int> curList = new List<int>();
                 for (int j = 0; j != count; ++j)
                 {
-                    int val = 0;
-                    if (!Int32.TryParse(curRow.Cells[j].Value.ToString(), out val))
+                    try {
+                        int val = 0;
+                        if (!Int32.TryParse(curRow.Cells[j].Value.ToString(), out val))
+                        {
+                            MessageBox.Show("неверные значения");
+                            return;
+                        }
+                        if (val == 1)
+                            curList.Add(j);
+                    }
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("неверные значения");
+                        MessageBox.Show($"Error: {ex.Message}");
                         return;
                     }
-                    if (val == 1)
-                        curList.Add(j);
                 }
+
                 inputValues.Add(curList);
             }
-            //inputValues.Add(new List<int> { 1, 6 });
-            //inputValues.Add(new List<int> { 2, 3 });
-            //inputValues.Add(new List<int> { });
-            //inputValues.Add(new List<int> { });
-            //inputValues.Add(new List<int> { 3 });
-            //inputValues.Add(new List<int> { 2, 3 });
-            //inputValues.Add(new List<int> { 1 });
-            //inputValues.Add(new List<int> { 5, 6 });
-            //inputValues.Add(new List<int> { 1 });
-            //inputValues.Add(new List<int> { 4,6,7,8 });
-            oper = new GraphOperator(count, inputValues);
-            oper.createLevels();
-            int value = int.Parse(levelUpDown.Value.ToString());
-            levelList.Text = showLevelsForVal(value);
-            levelUpDown.Maximum = oper.levelsCount - 1;
-            allLevelCount.Text = oper.levelsCount.ToString();
-            showRenamedMatrix();
+            try
+            {
+                oper = new GraphOperator(count, inputValues);
+                oper.createLevels();
+                int value = int.Parse(levelUpDown.Value.ToString());
+                levelList.Text = showLevelsForVal(value);
+                levelUpDown.Maximum = oper.levelsCount - 1;
+                allLevelCount.Text = oper.levelsCount.ToString();
+                showRenamedMatrix(oper);
+                string s = "";
+                Dictionary<int, int> rule = oper.rule;
+                foreach (KeyValuePair<int, int> p in rule)
+                {
+                    s += p.Key.ToString() + "=>" + p.Value.ToString() + "  ";
+                }
+                rules.Text = s;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+                return;
+            } 
         }
 
-        private void showRenamedMatrix()
+        private void showRenamedMatrix(GraphOperator oper)
         {
-            List<List<int>> refreshedMatrix = oper.createRenumberedGraphList();
+            List < List < KeyValuePair<int, int> >> matrix = oper.AtoBMatrix(oper.createRenumberedGraphList());
+            int bounds = oper.bounds;
             relationsMatrixView.Rows.Clear();
-            foreach(List<int> l in refreshedMatrix)
+            relationsMatrixView.Columns.Clear();
+            for (int i = 0; i != bounds; i++)
+                relationsMatrixView.Columns.Add(new DataGridViewTextBoxColumn());
+            for (int i = 0; i != matrix.Count; ++i)
             {
-                DataGridViewRow dgvr = new DataGridViewRow();
-                for(int i=0; i!= count; ++i)
+                DataGridViewRow curRow = new DataGridViewRow();
+                for (int j = 0; j != bounds; ++j)
                 {
                     DataGridViewTextBoxCell cell = new DataGridViewTextBoxCell();
-                    if (l.Contains(i)) cell.Value = "1";
-                    else cell.Value = "0";
-                    dgvr.Cells.Add(cell);
+                    if (matrix[i].Contains(new KeyValuePair<int, int>(j, 1)))
+                        cell.Value = 1;
+                    else if (matrix[i].Contains(new KeyValuePair<int, int>(j, -1)))
+                        cell.Value = -1;
+                    else cell.Value = 0;
+                    curRow.Cells.Add(cell);
                 }
-                relationsMatrixView.Rows.Add(dgvr);
+                relationsMatrixView.Rows.Add(curRow);
+                relationsMatrixView.Rows[i].HeaderCell.Value = i.ToString();
+            }
+            for (int j = 0; j != bounds; ++j)
+            {
+                relationsMatrixView.Columns[j].HeaderCell.Value = j.ToString();
             }
         }
 
